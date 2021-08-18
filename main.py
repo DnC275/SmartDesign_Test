@@ -46,10 +46,10 @@ def get_by_filter():
         for sub_par in parameters:
             filt['.'.join(['parameters', sub_par])] = parameters[sub_par]
     product_objects = collection.find(filt)
-    if not product_objects:
-        abort(Response(constants.PRODUCTS_WITH_CHARS_NOT_FOUND_MESSAGE, 404))
     products = [Product(product_obj['_id'], product_obj['title'], product_obj['description'],
                         product_obj['parameters']).json_format() for product_obj in product_objects]
+    if not products:
+        abort(Response(constants.PRODUCTS_WITH_CHARS_NOT_FOUND_MESSAGE, 404))
     return jsonify(products)
 
 
