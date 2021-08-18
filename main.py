@@ -7,6 +7,8 @@ from bson import ObjectId
 
 from model import Product
 
+import constants
+
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
@@ -40,7 +42,7 @@ def get_by_filter():
     if 'parameters' in request.json:
         parameters = request.json['parameters']
         if not isinstance(parameters, dict):
-            abort(Response(""), 400)
+            abort(Response(constants.INVALID_PARAMETERS_MESSAGE, 400))
         for sub_par in parameters:
             filt['.'.join(['parameters', sub_par])] = parameters[sub_par]
     product_objects = collection.find(filt)
@@ -56,8 +58,7 @@ def create_product():
     if not request.json or 'title' not in request.json:
         abort(Response('Product must have "title"', 400))
     if 'parameters' in request.json and not isinstance(request.json['parameters'], dict):
-        abort(Response('Product parameters must be set as list of key/value pairs.\
-                        Example - "parameters": {first: f_value, second: s_value}', 400))
+        abort(Response(constants.INVALID_PARAMETERS_MESSAGE, 400))
     product_id = collection.insert_one({'title': request.json['title'],
                                         'description': request.json.get('description', ''),
                                         'parameters': request.json.get('parameters', {})}).inserted_id
