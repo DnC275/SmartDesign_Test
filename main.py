@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
 client = MongoClient('localhost', 27017)
-collection = client['test_db']['test']
+collection = client['products_db']['product_list']
 
 
 @app.route('/test/api/products', methods=['GET'])
@@ -28,7 +28,7 @@ def get_all():
 def get_by_id(pr_id):
     product_object = collection.find_one({'_id': ObjectId(pr_id)})
     if not product_object:
-        abort(Response('There is no product with this id', 404))
+        abort(Response(constants.ID_NOT_FOUND_MESSAGE, 404))
     product = Product(product_object['_id'], product_object['title'], product_object['description'],
                       product_object['parameters'])
     return jsonify(product.json_format())
@@ -47,7 +47,7 @@ def get_by_filter():
             filt['.'.join(['parameters', sub_par])] = parameters[sub_par]
     product_objects = collection.find(filt)
     if not product_objects:
-        abort(Response('There are no products with such characteristics', 404))
+        abort(Response(constants.PRODUCTS_WITH_CHARS_NOT_FOUND_MESSAGE, 404))
     products = [Product(product_obj['_id'], product_obj['title'], product_obj['description'],
                         product_obj['parameters']).json_format() for product_obj in product_objects]
     return jsonify(products)
@@ -56,7 +56,7 @@ def get_by_filter():
 @app.route('/test/api/products', methods=['POST'])
 def create_product():
     if not request.json or 'title' not in request.json:
-        abort(Response('Product must have "title"', 400))
+        abort(Response(constants.NO_TITLE_MESSAGE, 400))
     if 'parameters' in request.json and not isinstance(request.json['parameters'], dict):
         abort(Response(constants.INVALID_PARAMETERS_MESSAGE, 400))
     product_id = collection.insert_one({'title': request.json['title'],
