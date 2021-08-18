@@ -1,12 +1,14 @@
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/DnC275/SmartDesign_Test)
 
-##Микросервис для электронного магазина
+## Микросервис для электронного магазина
+
 Модель/cущности:
 Товар - отвечает за товар на складе, например - телефон такой-то марки от такого-то производителя.
 
 Поля: идентификатор (ID), название, описание, параметры: массив пар ключ/значение
 
-###Подготовка к запуску
+### Подготовка к запуску
+
 1. Склонировать репозиторий:
    ```bash
    git clone https://github.com/DnC275/SmartDesign_Test 
@@ -37,7 +39,8 @@
 python main.py
 ```
 
-###Использование
+### Использование
+
 * Создать товар:
    ```bash
    curl -i -H "Content-Type: application/json" -X POST "http://localhost:5000/test/api/products" -d '{"title": "Title of product", "description": "Some description", "parameters": {"first": "f_value", "second": "s_value"}}'
